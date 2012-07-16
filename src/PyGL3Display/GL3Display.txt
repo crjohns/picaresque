@@ -1,0 +1,40 @@
+PyGL3Display
+
+PyGL3Display is a high performance 2D OpenGL library. Unlike several other libraries which claim high performance, this one really does mean it. I'm fairly confident that there isn't a whole lot of optimisation possible, with or without changing the API. One notice is that at present, PyGL3Display does not provide access to all OpenGL primitives. Instead, the user is limited to rectangular sprites. An example of speed, on my relatively modest desktop PC, it is possible to individually set 4000 sprite attributes whilst maintaining a speed of above 60FPS.
+
+PyGL3Display is licensed for use in open source projects under both the GPLv2 and GPLv3. I am willing to discuss other licenses, including commercial, with anyone who gets in touch.
+
+This module still has a little work to do before it is strictly OpenGL 3 compliant (switching to using VBOs). However, it will work at a high performance level with PyOpenGL 3, which is not the case with other libraries I've looked at.
+
+Requirements: Pygame, PyOpenGL, OpenGL 2.0 compliant hardware
+
+Features:
+- Completely transparent interface which hides all complicated implementation details (unless you *want* to get at them, in which case you can)
+- GL3PygameSurface - an almost dropin replacement for Pygames Surface
+- GL3PGStyleSprite - a similar (but not quite the same) replacement for Pygames sprite - minimal porting effor will be required.
+- Nearly OpenGL ES 2.0 compliant (although this is irrelevant until PyOpenGL supports OpenGL ES)
+- Uses Texture Atlases and Batch Rendering for speed
+- Sprites with a simple API to set position, rotation, scale etc. 
+- Sprites only consume CPU time when Sprite attributes are being set
+- Should be Python 3.0 compatible
+- Uses custom shaders to offload geometry calculation to the GPU
+- Multiple "Camera" support in the shader i.e. can associate sprites with a camera and have the sprites position adjusted to what the screen is looking at, and this takes virtually zero CPU time regardless of the number of sprites. I daresay this is good for anyone using tiled graphics, because all tiles on screen can be shifted with basically no cost.
+- In this version, ctypes coercion and python function call overhead is the largest part of the runtime adter sprites are created; when I say there isn't a lot of speed left, I really mean it.
+
+Caveats:
+- GL3Sprites are quite slow to create because there's a lot of "magic" happening on init; for now, the workaround is a specialised GL3SpriteBuffer class, which can recycle old sprites.
+
+Comparisons to Pygame:
+- PyGL3Display sprites have no Rect attribute, or method of doing collisions. This is because as the rotation and scaling commands are performed on the GPU, there is no practical way of getting the actual coordinates of the sprite. This is only an issue if you don't use MVC or similar; I'd invisage that PyGL3Display would work very well paired with PyBox2d or some other physics engine.
+- PyGL3Display will be massively faster than Pygame.
+- PyGL3Display doesn't have many examples yet..
+
+Comparisons to Gloss and Pyglet:
+- PyGL3Display doesn't allow the use of OpenGL primitives, so it isn't as flexible. In addition, Pyglets graphics system provides some other features which PyGL3Display doesn't automatically provide - although they're all implementable on top of GL3PygameSurface.
+- PyGL3Display is massively faster than either of these. If used correctly, I'd speculate Pyglet could get to just under 1/3rd of the speed for complicated operations (scale+rotation), based on how the batching functionality works. Gloss and Pyglet used naively should be outpaced by an order of magnitude, because PyGL3Display performs far fewer OpenGL operations - and these are the slowest function calls which can be made.
+- PyGL3Display provides sprite layers. Pyglet and Gloss don't, instead using the order that the draw methods are called. Sprite layers can be used to simulate this, but per-sprite draw methods are slow (hence why PyGL3Display doesn't have them) so I'd advise against it.
+- PyGL3Display doesn't have many examples yet..
+
+Development notes
+
+The basic principal behind PyGL3Display is aggressive optimisation wherever it would not impact using OpenGL 3.1 / OpenGL ES 2.0. This is accomplished by observing that Python code is expensive, Python function calls are expensive, and GL function calls are really expensive. Hence, strategies - mainly lazy computation - are employed to reduce these. Python code is minimised by offloading the coordinate calculation to the GPU shaders. Function calls are minimised by a lot of lazy computation. OpenGL calls are minimised by grouping everything which can be grouped.

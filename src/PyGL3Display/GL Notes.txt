@@ -1,0 +1,5 @@
+Notes on GL programming:
+
+Textures use fractional coordinates.
+
+2d coordinates are specified in the following order: Top right, Bottom right, Bottom left, Top left
