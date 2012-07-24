@@ -1,9 +1,0 @@
-PyGL3Display Readme
-(C) Habilain 2011+
-Most of this is dual licensed under the GPLv2 and GPLv3 licenses. Some files
-may have different licenses; consult the source code of the file for specific
-information.
-
-Documentation is provided by docstrings. Please consult the source code,
-or import the modules in Python and use the help function to get information
-on each function.
