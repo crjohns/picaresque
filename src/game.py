@@ -20,7 +20,7 @@ class Game:
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL) 
 
         glMatrixMode(GL_PROJECTION)
-        gluOrtho2D(0, dimensions[0], 0, dimensions[1])
+        gluOrtho2D(0, 100, 0, 100)
 
     def render(self):
         glClear(GL_COLOR_BUFFER_BIT)
