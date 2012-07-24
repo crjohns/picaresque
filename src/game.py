@@ -19,9 +19,12 @@ class Game:
         self.clock = pygame.time.Clock()
 
     def addRenderable(self, obj):
-        if not obj.render:
+        try:
+            obj.render
+        except AttributeError:
             raise InvalidType
-        renderList.append(obj)
+
+        self.renderList.append(obj)
 
     def mainLoop(self):
         while 1:
@@ -31,7 +34,9 @@ class Game:
                     sys.exit()
                 if event.type == pygame.KEYUP and event.key == K_ESCAPE:
                     sys.exit()
-                 
+             
+            for obj in self.renderList:
+                obj.render(self.screen)
 
             pygame.display.flip()
 
