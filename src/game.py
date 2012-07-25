@@ -1,20 +1,20 @@
 import pygame
 import sys
 from pygame.locals import *
-from OpenGL.GL import *
-from OpenGL.GLU import *
+
 
 class InvalidType:
     pass
+
 
 class Game:
 
     renderList = []
 
-    def __init__(self, dimensions=(800,600)):
+    def __init__(self, dimensions=(800, 600)):
         pygame.init()
-        self.dimensions=dimensions
-        self.screen = pygame.display.set_mode(dimensions, HWSURFACE|DOUBLEBUF)
+        self.dimensions = dimensions
+        self.screen = pygame.display.set_mode(dimensions, HWSURFACE | DOUBLEBUF)
 
         self.clock = pygame.time.Clock()
 
@@ -34,7 +34,7 @@ class Game:
                     sys.exit()
                 if event.type == pygame.KEYUP and event.key == K_ESCAPE:
                     sys.exit()
-             
+
             for obj in self.renderList:
                 obj.render(self.screen)
 
