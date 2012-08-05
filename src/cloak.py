@@ -103,6 +103,11 @@ class Manager:
         >>> man.addHandler("/numbers", LambdaHandler(lambda x,y: 2))
         >>> print man.get("/numbers/4")
         None
+        >>> print man.get("/numbers")
+        2
+        >>> man.addHandler("/attrtest", LambdaHandler(lambda x,y: y['name']))
+        >>> print man.get("/attrtest", {'name': 'testme'})
+        testme
 
     """
 

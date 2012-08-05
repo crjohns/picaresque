@@ -3,7 +3,7 @@ import sys
 from pygame.locals import *
 
 
-class InvalidType:
+class InvalidType(Exception):
     pass
 
 
@@ -19,9 +19,7 @@ class Game:
         self.clock = pygame.time.Clock()
 
     def addRenderable(self, obj):
-        try:
-            obj.render
-        except AttributeError:
+        if getattr(obj, 'render', None) == None:
             raise InvalidType
 
         self.renderList.append(obj)
@@ -29,11 +27,15 @@ class Game:
     def mainLoop(self):
         while 1:
             for event in pygame.event.get():
-                print event
+                #print event
                 if event.type == pygame.QUIT:
                     sys.exit()
                 if event.type == pygame.KEYUP and event.key == K_ESCAPE:
                     sys.exit()
+                if event.type == pygame.KEYUP and event.key == K_a:
+                    self.location.updateView((0,0), min(self.location.scale *10, 200))
+                if event.type == pygame.KEYUP and event.key == K_z:
+                    self.location.updateView((0,0), max(self.location.scale /10, 20))
 
             for obj in self.renderList:
                 obj.render(self.screen)
